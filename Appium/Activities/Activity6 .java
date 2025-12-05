@@ -1,4 +1,4 @@
-package Activities;
+package activities;
 
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -16,11 +16,12 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import io.appium.java_client.AppiumBy;
+import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.options.UiAutomator2Options;
 
 public class Activity6 {
-	AndroidDriver driver;
+	AppiumDriver driver;
 	WebDriverWait wait;
 
 	@BeforeClass
@@ -40,55 +41,59 @@ public class Activity6 {
 		driver = new AndroidDriver(serverURL, options);
 		wait = new WebDriverWait(driver, Duration.ofSeconds(20));
 
-		// Open Selenium page
+		// Open page
 		driver.get("https://training-support.net/webelements/sliders");
 	}
-
+	
+	
 	@Test
 	public void volume75Test() {
 		// Wait for page to load
 		wait.until(ExpectedConditions.elementToBeClickable(AppiumBy.xpath("//android.widget.SeekBar")));
-		// Get the size of the screen
+		
+		// Get the size of the device
 		Dimension dims = driver.manage().window().getSize();
 		// Set the start and end points
-		Point start = new Point((int) (dims.getWidth() * .50), (int) (dims.getHeight() * .77));
-		Point end = new Point((int) (dims.getWidth() * .67), (int) (dims.getHeight() * .77));
+		Point start = new Point((int) (0.5*dims.getWidth()), (int) (0.77*dims.getHeight()));
+		Point end = new Point((int) (0.67*dims.getWidth()), (int) (0.77*dims.getHeight()));
 		// Perform swipe
-		ActionsBase.doSwipe(driver, start, end, 2000);
-
-		// Get the volume level
+		ActionBase.doSwipe(driver, start, end, 2000);
+ 
+		// Find the percentage text and assert
 		String volumeText = driver
 			.findElement(AppiumBy.xpath("//android.view.View/android.widget.TextView[contains(@text, '%')]"))
 			.getText();
-
+ 
 		// Assertions
-		Assert.assertTrue(volumeText.contains("75%"));
+		Assert.assertEquals(volumeText, "75%");
 	}
-
+ 
 	@Test
 	public void volume25Test() {
 		// Wait for page to load
 		wait.until(ExpectedConditions.elementToBeClickable(AppiumBy.xpath("//android.widget.SeekBar")));
+		
 		// Get the size of the screen
 		Dimension dims = driver.manage().window().getSize();
 		// Set the start and end points
-		Point start = new Point((int) (dims.getWidth() * .50), (int) (dims.getHeight() * .77));
-		Point end = new Point((int) (dims.getWidth() * .33), (int) (dims.getHeight() * .77));
+		Point start = new Point((int) (0.5*dims.getWidth()), (int) (0.77*dims.getHeight()));
+		Point end = new Point((int) (0.34*dims.getWidth()), (int) (0.77*dims.getHeight()));
 		// Perform swipe
-		ActionsBase.doSwipe(driver, start, end, 2000);
-
+		ActionBase.doSwipe(driver, start, end, 2000);
+ 
 		// Get the volume level
 		String volumeText = driver
 			.findElement(AppiumBy.xpath("//android.view.View/android.widget.TextView[contains(@text, '%')]"))
 			.getText();
-
+ 
 		// Assertions
-		Assert.assertTrue(volumeText.contains("25%"));
+		Assert.assertEquals(volumeText, "25%");
 	}
-
+	
 	@AfterClass
 	public void tearDown() {
-		// Close the browser
+		// Close the app
 		driver.quit();
 	}
+
 }
